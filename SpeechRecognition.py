@@ -60,15 +60,16 @@ class SpeechRecognition:
         
         #give the user feedback he can start talking
         self.sound.play_audio_file(Config.audio_start_record)
-        #start recording
-        self.logger.add_to_log("Say something")
-        print "Say something"
-        with self.microphone as mic:
-            self.recognizer.adjust_for_ambient_noise(mic)
-            audio_file = self.recognizer.listen(mic, timeout=Config.seconds_for_record)
+       
         try:
-            #call google API
-            speech_result = self.recognizer.recognize_google(audio_file, language="he-IL")
+             #start recording
+             self.logger.add_to_log("Say something")
+             print "Say something"
+             with self.microphone as mic:
+                 self.recognizer.adjust_for_ambient_noise(mic)
+                 audio_file = self.recognizer.listen(mic, timeout=Config.seconds_for_record)
+             #call google API
+             speech_result = self.recognizer.recognize_google(audio_file, language="he-IL")
             
         #cannot reach google services / not enough credit for recognition
         except sr.RequestError as e:
