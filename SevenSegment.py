@@ -22,11 +22,7 @@ class SevenSegment:
         self.logger.log_function_exit(str(self.__dict__))
 
     def __del__(self):
-        logger.log_function_entry(locals())
-
         self.close_connection()
-
-        self.logger.log_function_exit(str(self.__dict__))
 
     def write_lives(self, lives):
         self.logger.log_function_entry(locals())

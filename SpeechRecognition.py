@@ -32,7 +32,6 @@ class SpeechRecognition:
             if microphone_name == Config.mic_name:
                 mic_device_index = i
         self.microphone = sr.Microphone(device_index = mic_device_index, sample_rate = Config.sample_rate, chunk_size = Config.chunk_size)
-        self.recognizer.adjust_for_ambient_noise(self.microphone)
 
         #load json dictionary file
         if os.path.isfile(Config.dictionary_file_path):
@@ -58,32 +57,35 @@ class SpeechRecognition:
             raise EnvironmentError("No internet connection")
         
         speech_result=""
+        
         #give the user feedback he can start talking
         self.sound.play_audio_file(Config.audio_start_record)
         #start recording
         self.logger.add_to_log("Say something")
         print "Say something"
-        audio_file = self.recognizer.listen(self.microphone, timeout=Config.seconds_for_record)
+        with self.microphone as mic:
+            self.recognizer.adjust_for_ambient_noise(mic)
+            audio_file = self.recognizer.listen(mic, timeout=Config.seconds_for_record)
         try:
             #call google API
             speech_result = self.recognizer.recognize_google(audio_file, language="he-IL")
             
         #cannot reach google services / not enough credit for recognition
         except sr.RequestError as e:
-            self.sound.play_audio_file(Config.audio_error_google_api)
+            self.sound.play_audio_file(Config.audio_google_api_request_err)
             self.logger.log_exception("Could not request results from Google Speech Recognition service; {0}".format(e), str(self.__dict__))
             return hit, exception_occurred
         
         #cannot understand sound                
         except sr.UnknownValueError:
-            self.sound.play_audio_file(Config.audio_error_google_api)
+            self.sound.play_audio_file(Config.audio_google_api_cant_understand)
             self.save_unrecognized_record(audio_file, current_letter)
             self.logger.log_exception("Google API could not understand audio", str(self.__dict__))
             return hit, exception_occurred
 
         #google took too long to response (connection closed?)
         except sr.WaitTimeoutError as e:
-            self.sound.play_audio_file(Config.audio_error_google_api)
+            self.sound.play_audio_file(Config.audio_google_api_timeout)
             self.logger.log_exception("Got TIMEOUT exception; {0}".format(e), str(self.__dict__))
             return hit, exception_occurred
                  
