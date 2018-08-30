@@ -1,11 +1,11 @@
-import Aleph
-import vlc
 import Config
-import Logger
+from Logger import Logger
+from Sound import Sound
+from Aleph import Aleph
+
 from subprocess import call
 
 start_button_gpio_pin = 38
-reset_button_gpio_pin = 40
 
 letters_gpios_pins_dict = {
     3  : "aleph",
@@ -33,20 +33,18 @@ letters_gpios_pins_dict = {
 
 def main():
     try:
-                
+        logger = Logger()
+        sound = Sound(logger)
         #start the game
-        aleph = Aleph.Aleph(Logger.Logger(),
-                            letters_gpios_pins_dict,
-                            start_button_gpio_pin,
-                            Config.lives).run_game()
+        aleph = Aleph(logger,
+                      letters_gpios_pins_dict,
+                      start_button_gpio_pin,
+                      Config.lives).run_game()
 
-    except (EnvironmentError) as err:
-        print(err)
-        vlc.MediaPlayer("audio/fatal_error.mp3").play()
-        #logger.error(err, exc_info=True)
+    except (EnvironmentError, IOError) as err:
+        sound.play_audio_file(Config.audio_fatal_error).play()
+        logger.log_exception(err, locals())
 
-    finally:
-        call(["jack_control", "stop"])
 
 if __name__ == "__main__":
     main()
