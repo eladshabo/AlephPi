@@ -30,7 +30,7 @@ class SevenSegment:
         #clear serial display
         self.serial.write(b"\x76")        
         lives_str=""
-        for i in range(1, lives):
+        for i in range(1, lives + 1):
             lives_str += str(i)
         self.serial.write(lives_str.encode('utf-8'))
 
