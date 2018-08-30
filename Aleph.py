@@ -19,7 +19,7 @@ class Aleph:
         #init fields
         self.logger = logger
         self.sound = sound
-        self.speech_recognition = SpeechRecognition(self.logger)
+        self.speech_recognition = SpeechRecognition(self.logger, self.sound)
         self.letters_gpio_dict = letters_gpio_dict
         self.start_button_gpio = start_button_gpio
         self.kLives = lives
