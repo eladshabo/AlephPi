@@ -37,6 +37,7 @@ def main():
         sound = Sound(logger)
         #start the game
         aleph = Aleph(logger,
+                      sound,
                       letters_gpios_pins_dict,
                       start_button_gpio_pin,
                       Config.lives).run_game()
