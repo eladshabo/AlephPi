@@ -4,6 +4,7 @@ from Sound import Sound
 from Aleph import Aleph
 
 from subprocess import call
+import RPi.GPIO as GPIO
 
 start_button_gpio_pin = 38
 
@@ -46,6 +47,8 @@ def main():
         sound.play_audio_file(Config.audio_fatal_error).play()
         logger.log_exception(err, locals())
 
+    finally:
+        GPIO.cleanup()
 
 if __name__ == "__main__":
     main()
