@@ -80,7 +80,7 @@ class SpeechRecognition:
         #cannot understand sound                
         except sr.UnknownValueError:
             self.sound.play_audio_file(Config.audio_google_api_cant_understand)
-            self.save_unrecognized_record(audio_file, current_letter)
+            self.save_record(Config.unrecognized_folder, audio_file, current_letter)
             self.logger.log_exception("Google API could not understand audio", str(self.__dict__))
             return hit, exception_occurred
 
