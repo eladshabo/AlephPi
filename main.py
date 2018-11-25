@@ -2,8 +2,6 @@ import Config
 from Logger import Logger
 from Sound import Sound
 from Aleph import Aleph
-
-from subprocess import call
 import RPi.GPIO as GPIO
 
 start_button_gpio_pin = 38

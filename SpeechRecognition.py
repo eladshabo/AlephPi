@@ -1,5 +1,3 @@
-
-import io
 import os
 import os.path
 from subprocess import call

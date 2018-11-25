@@ -1,11 +1,5 @@
-import io
-import sys
-import os
-import os.path
-import time
 
-import json
-import serial
+import time
 import Config
 from SpeechRecognition import SpeechRecognition
 from SevenSegment import SevenSegment

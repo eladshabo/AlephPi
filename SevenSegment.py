@@ -1,6 +1,3 @@
-import io
-import os
-import os.path
 import serial
 import Config
 
