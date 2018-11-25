@@ -17,7 +17,7 @@ class SevenSegment:
 
         #set brightness to max
         self.serial.write(b"\x7A")
-        self.serial.write("FFFFF")
+        self.serial.write(b"FFFFF")
         
         self.logger.log_function_exit(str(self.__dict__))
 

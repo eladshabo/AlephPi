@@ -2,14 +2,14 @@
 import io
 import os
 import os.path
-import vlc
 from subprocess import call
 import Config
 import json
 import speech_recognition as sr
 import time
 import requests
-
+import threading
+import RPi.GPIO as GPIO
 
 class SpeechRecognition:
     
@@ -18,6 +18,7 @@ class SpeechRecognition:
         
         self.logger = logger
         self.sound = sound
+        self.listening = False
         #reset the sound card
         call(["jack_control", "stop"])
         call(["jack_control", "start"])
@@ -32,6 +33,9 @@ class SpeechRecognition:
             if microphone_name == Config.mic_name:
                 mic_device_index = i
         self.microphone = sr.Microphone(device_index = mic_device_index, sample_rate = Config.sample_rate, chunk_size = Config.chunk_size)
+        self.recognizer.dynamic_energy_threshold = False
+        self.recognizer.energy_threshold = 400
+
 
         #load json dictionary file
         if os.path.isfile(Config.dictionary_file_path):
@@ -42,7 +46,7 @@ class SpeechRecognition:
 
         self.logger.log_function_exit(str(self.__dict__))
 
-    def recognize_letter(self, current_letter):
+    def recognize_letter(self, current_letter, listening_led_gpio_pin):
         self.logger.log_function_entry(locals())
         
         #return values
@@ -64,12 +68,18 @@ class SpeechRecognition:
         try:
              #start recording
              self.logger.add_to_log("Say something")
-             print "Say something"
+             print("Say something")
              with self.microphone as mic:
-                 self.recognizer.adjust_for_ambient_noise(mic)
-                 audio_file = self.recognizer.listen(mic, timeout=Config.seconds_for_record)
+                 print("speech_recognition threshold before: " + str(self.recognizer.energy_threshold))
+                 #self.recognizer.adjust_for_ambient_noise(mic)
+                 print("speech_recognition threshold after: " + str(self.recognizer.energy_threshold))
+                 self.listening = True
+                 t = threading.Thread(target=self.blink_listening_led, args=(listening_led_gpio_pin,))
+                 t.start()
+                 audio_file = self.recognizer.listen(mic, timeout=Config.seconds_for_record, phrase_time_limit=10)
+                 self.listening = False
              #call google API
-             speech_result = self.recognizer.recognize_google(audio_file, language="he-IL")
+             speech_result = self.recognizer.recognize_google(audio_file, language=Config.google_recognition_language)
             
         #cannot reach google services / not enough credit for recognition
         except sr.RequestError as e:
@@ -89,14 +99,21 @@ class SpeechRecognition:
             self.sound.play_audio_file(Config.audio_google_api_timeout)
             self.logger.log_exception("Got TIMEOUT exception; {0}".format(e), str(self.__dict__))
             return hit, exception_occurred
+
+        finally:
+            #even if exception was thrown during the record
+            self.listening = False
                  
         #parse result
         exception_occurred = False
         if speech_result == "":
-            self.logger.add_to_log("Google returned empty string, saving the record to unrecognized foler")
+            self.logger.add_to_log("Google returned empty string, saving the record to unrecognized folder")
             self.save_record(Config.unrecognized_folder, audio_file, current_letter)
             self.logger.log_function_exit(str(self.__dict__))
             return hit, exception_occurred
+
+        print("Google API returned: " + speech_result)
+        print("Current letter turn on is: " + current_letter)
 
         if speech_result in self.json_dict.keys():               
             if current_letter == self.json_dict[speech_result]:
@@ -115,7 +132,7 @@ class SpeechRecognition:
         folder_path=os.getcwd() + "/" + folder
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        with open(folder_path + "/" + time.strftime("%x").replace("/","_") + "_" + time.strftime("%X") + "_expected_" + expected + ".wav",'w') as file:
+        with open(folder_path + "/" + time.strftime("%x").replace("/","_") + "_" + time.strftime("%X") + "_expected_" + expected + ".wav",'wb') as file:
             file.write(audio_file.get_wav_data())
 
         self.logger.log_function_exit(str(self.__dict__))
@@ -132,3 +149,11 @@ class SpeechRecognition:
         
         self.logger.log_function_exit(str(self.__dict__))
         return connected
+
+    def blink_listening_led(self, listening_led_gpio_pin):
+        while self.listening:
+            print("Listening!")
+            GPIO.output(listening_led_gpio_pin, GPIO.HIGH)
+            time.sleep(.5)
+            GPIO.output(listening_led_gpio_pin, GPIO.LOW)
+            time.sleep(.5)

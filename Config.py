@@ -1,6 +1,6 @@
 #file pointers
 dictionary_file_path = "dict.json"
-google_json_file="/home/pi/Desktop/Aleph/RPi_board.json"
+google_json_file="/home/pi/Desktop/RPi_board.json"
 
 #audio files
 audio_start_game = "audio/start_game.mp3"
@@ -17,6 +17,7 @@ audio_no_internet = "audio/no_internet.mp3"
 
 #speech recognition
 google_environment_variable_name = "GOOGLE_APPLICATION_CREDENTIALS"
+google_recognition_language = "he-IL"
 mic_name = "USB PnP Sound Device: Audio (hw:1,0)"
 sample_rate = 48000
 chunk_size = 2048

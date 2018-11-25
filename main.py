@@ -7,6 +7,7 @@ from subprocess import call
 import RPi.GPIO as GPIO
 
 start_button_gpio_pin = 38
+blink_record_gpio_pin = 40
 
 letters_gpios_pins_dict = {
     3  : "aleph",
@@ -41,11 +42,14 @@ def main():
                       sound,
                       letters_gpios_pins_dict,
                       start_button_gpio_pin,
+                      blink_record_gpio_pin,
                       Config.lives).run_game()
 
     except (EnvironmentError, IOError) as err:
         sound.play_audio_file(Config.audio_fatal_error).play()
         logger.log_exception(err, locals())
+        for key in letters_gpios_pins_dict.keys():
+            GPIO.setup(key, GPIO.LOW)
 
     finally:
         GPIO.cleanup()
