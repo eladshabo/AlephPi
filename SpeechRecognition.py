@@ -119,7 +119,7 @@ class SpeechRecognition:
             else:
                 hit = False
                 self.logger.add_to_log("Got " + speech_result + " which is not defined in the json dictionary file, saving the record to misdetection foler")
-                self.save_misdetection_record(Config.misdetection_folder, audio_file, current_letter)
+                self.save_record(Config.misdetection_folder, audio_file, current_letter)
                 
         self.logger.log_function_exit(str(self.__dict__))
         return hit, exception_occurred
