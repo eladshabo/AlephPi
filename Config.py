@@ -13,6 +13,7 @@ audio_google_api_timeout = "audio/google_api_timeout.mp3"
 audio_google_api_request_err = "audio/google_api_request_err.mp3"
 audio_fatal_error = "audio/fatal_error.mp3"
 audio_no_internet = "audio/no_internet.mp3"
+audio_correct_answers_folders = "audio/correct_answers"
 
 
 #speech recognition

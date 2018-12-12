@@ -159,18 +159,29 @@ class Aleph:
             #make sure the chosen letter is on
             GPIO.output(self.current_letter_gpio, GPIO.HIGH)
             #call Google API and get True or False.
-            hit, exception_occurred = self.speech_recognition.recognize_letter(self.letters_gpio_dict[self.current_letter_gpio], self.start_button_led_gpio_pin) #send the alphabetical verb of the letter
+            hit, exception_occurred = self.speech_recognition.recognize_letter(self.letters_gpio_dict[self.current_letter_gpio], [self.start_button_led_gpio_pin, self.current_letter_gpio]) #send the alphabetical verb of the letter
             if exception_occurred:
                 self.turn_all_letters_gpios(False)
                 #continue the game, without updating the lives, the user already got sound feedback from internal exceptions
                 continue
 
+            #answer was correct
             if hit:
+                #play correct answer tone
                 self.sound.play_audio_file(Config.audio_correct_answer)
+                #clean led table from leftovers
                 self.turn_all_letters_gpios(False)
+
+            #answer was wrong
             else:
+                GPIO.setup(self.current_letter_gpio, GPIO.HIGH)
+                #play wrong answer tone
                 self.sound.play_audio_file(Config.audio_incorrect_answer)
+                #play the correct answer
+                self.sound.play_audio_file(Config.audio_correct_answers_folders + "/" + self.letters_gpio_dict[self.current_letter_gpio] + ".mp3")
+                #clean led table from leftovers
                 self.turn_all_letters_gpios(False)
+                #update lives
                 self.lives -= 1
                 if Config.use_seven_seg:
                     self.seven_segment.write_lives(self.lives)

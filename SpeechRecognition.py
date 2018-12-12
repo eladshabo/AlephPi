@@ -44,7 +44,7 @@ class SpeechRecognition:
 
         self.logger.log_function_exit(str(self.__dict__))
 
-    def recognize_letter(self, current_letter, listening_led_gpio_pin):
+    def recognize_letter(self, current_letter, listening_led_gpio_pins):
         self.logger.log_function_entry(locals())
         
         #return values
@@ -72,9 +72,9 @@ class SpeechRecognition:
                  #self.recognizer.adjust_for_ambient_noise(mic)
                  print("speech_recognition threshold after: " + str(self.recognizer.energy_threshold))
                  self.listening = True
-                 t = threading.Thread(target=self.blink_listening_led, args=(listening_led_gpio_pin,))
+                 t = threading.Thread(target=self.blink_listening_led, args=(listening_led_gpio_pins,))
                  t.start()
-                 audio_file = self.recognizer.listen(mic, timeout=Config.seconds_for_record, phrase_time_limit=10)
+                 audio_file = self.recognizer.listen(mic, timeout=2, phrase_time_limit=Config.seconds_for_record)
                  self.listening = False
              #call google API
              speech_result = self.recognizer.recognize_google(audio_file, language=Config.google_recognition_language)
@@ -135,7 +135,7 @@ class SpeechRecognition:
 
         self.logger.log_function_exit(str(self.__dict__))
         
-    def connected_to_internet(self, url='https://www.google.com/', timeout=5):
+    def connected_to_internet(self, url='https://www.google.com/', timeout=2):
         self.logger.log_function_entry(locals())
         
         connected = True
@@ -148,10 +148,10 @@ class SpeechRecognition:
         self.logger.log_function_exit(str(self.__dict__))
         return connected
 
-    def blink_listening_led(self, listening_led_gpio_pin):
+    def blink_listening_led(self, listening_led_gpio_pins):
         while self.listening:
             print("Listening!")
-            GPIO.output(listening_led_gpio_pin, GPIO.HIGH)
-            time.sleep(.5)
-            GPIO.output(listening_led_gpio_pin, GPIO.LOW)
-            time.sleep(.5)
+            GPIO.output(listening_led_gpio_pins, GPIO.HIGH)
+            time.sleep(.2)
+            GPIO.output(listening_led_gpio_pins, GPIO.LOW)
+            time.sleep(.2)
