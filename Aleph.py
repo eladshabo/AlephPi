@@ -174,7 +174,7 @@ class Aleph:
 
             #answer was wrong
             else:
-                GPIO.setup(self.current_letter_gpio, GPIO.HIGH)
+                GPIO.output(self.current_letter_gpio, GPIO.HIGH)
                 #play wrong answer tone
                 self.sound.play_audio_file(Config.audio_incorrect_answer)
                 #play the correct answer
