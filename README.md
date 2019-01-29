@@ -41,7 +41,7 @@ Power--> A
 
 
 
-# HW
+# 1. HW
 
 ## GPIOs
 RaspberryPi has 40 GPIOs which can be used for different proposes. 
@@ -66,7 +66,7 @@ In order to protect RPi, each LED will be connected to RPi GPIO as described in 
 
 
 
-# SW
+# 2. SW
 
 
 1. Download Raspbian from [here](https://www.raspberrypi.org/downloads/raspbian/) and flash it on microSD card
