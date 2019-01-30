@@ -11,20 +11,20 @@ AlephPi workflow is described in the graph below:
 <img src='https://g.gravizo.com/svg?
  digraph G {
 	Power -> "Standby";
-    "Standby" -> "Standby" [ label="Demo lights" ];
-    "Standby" -> "LEDs Blinking one by one" [ label="User pressed start 1"];
-    "LEDs Blinking one by one" -> "Letter Selected" [ label="User pressed start 2"];
-    "Letter Selected" -> "Listening";
-    "Listening" -> "Recognize Speech";
-    "Recognize Speech" -> "Analyze Result";
-    "Analyze Result" -> "Wrong Answer";
-    "Analyze Result" -> "Correct Answer";
-    "Correct Answer" -> "LEDs Blinking one by one";
-    "Wrong Answer" -> "Update Lives" [ label="if Lives > 0"];
-    "Update Lives" -> "LEDs Blinking one by one" [ label="Lives -= 1"];
-    "Wrong Answer" -> "Standby" [ label="if Lives == 0"];
+    	"Standby" -> "Standby" [ label="Demo lights" ];
+    	"Standby" -> "LEDs Blinking one by one" [ label="User pressed start 1"];
+    	"LEDs Blinking one by one" -> "Letter Selected" [ label="User pressed start 2"];
+    	"Letter Selected" -> "Listening";
+    	"Listening" -> "Recognize Speech";
+    	"Recognize Speech" -> "Analyze Result";
+    	"Analyze Result" -> "Wrong Answer";
+    	"Analyze Result" -> "Correct Answer";
+    	"Correct Answer" -> "LEDs Blinking one by one";
+    	"Wrong Answer" -> "Update Lives" [ label="if Lives > 0"];
+    	"Update Lives" -> "LEDs Blinking one by one" [ label="Lives -= 1"];
+    	"Wrong Answer" -> "Standby" [ label="if Lives == 0"];
 }
-'/>
+/>
 
 # BOM
 
