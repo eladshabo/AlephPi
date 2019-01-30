@@ -8,21 +8,25 @@ Scroll down for Demo.
 # Operation
 AlephPi workflow is described in the graph below:
 
-```mermaid
-graph LR
-Power--> A
-    A[<b>Demo] -->|Start pressed <b>#1</b>| B(<center><b>Blinking lights</b><br>waiting for the user to select letter</center>)
-    B -->|Start pressed <b>#2</b>| C(<center><b>Letter selected</b><br>letter led is on)
-    C -- Selected letter is blinkning --> D((<b>Recording User))
-    D -- Recognize audio -->E((<b>GoogleAPI))
-    E -- Get recognition result --> F{<b>Analyze Speech Result}
-    F -->|<center><b>Correct Answer</b><br> Play sound |B
-    F -->|<center><b>Wrong Answer</b>|G{<center><b>Wrong State</b><br>Save record for later analysis}
-    G -->|<b>Lives > 0|B
-    G -->|<center><b>Lives == 0</b><br>Game Over |A
 
 
-```
+![Alt text](https://g.gravizo.com/svg?
+  digraph G {
+    aize ="4,4";
+    main [shape=box];
+    main -> parse [weight=8];
+    parse -> execute;
+    main -> init [style=dotted];
+    main -> cleanup;
+    execute -> { make_string; printf}
+    init -> make_string;
+    edge [color=red];
+    main -> printf [style=bold,label="100 times"];
+    make_string [label="make a string"];
+    node [shape=box,style=filled,color=".7 .3 1.0"];
+    execute -> compare;
+  }
+)
 
 # BOM
 
@@ -41,7 +45,7 @@ Power--> A
 
 
 
-# HW
+# 1. HW
 
 ## GPIOs
 RaspberryPi has 40 GPIOs which can be used for different proposes. 
@@ -66,7 +70,7 @@ In order to protect RPi, each LED will be connected to RPi GPIO as described in 
 
 
 
-# SW
+# 2. SW
 
 
 1. Download Raspbian from [here](https://www.raspberrypi.org/downloads/raspbian/) and flash it on microSD card
