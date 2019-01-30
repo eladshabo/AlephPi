@@ -1,32 +1,23 @@
 # AlephPi
-
 AlephPi is a game for children in the preschool stage, allowing them to learn the alphabetical letters using **RaspberryPi** and **Google Cloud Services**
 
-Scroll down for Demo.
+
+# Content
+* [Operation](https://github.com/eladshabo/AlephPi#operation)
+* [BOM](https://github.com/eladshabo/AlephPi#bom)
+* [Hardware](https://github.com/eladshabo/AlephPi#Hardware)
+* [Software](https://github.com/eladshabo/AlephPi#Software)
+* [Demo](https://github.com/eladshabo/AlephPi#Demo)
+* [Preparation](https://github.com/eladshabo/AlephPi#Preparation)
+
 
 
 # Operation
 AlephPi workflow is described in the graph below:
 
+![alt text](https://raw.githubusercontent.com/eladshabo/AlephPi/master/images/diagram.png)
 
 
-![Alt text](https://g.gravizo.com/svg?
-  digraph G {
-    aize ="4,4";
-    main [shape=box];
-    main -> parse [weight=8];
-    parse -> execute;
-    main -> init [style=dotted];
-    main -> cleanup;
-    execute -> { make_string; printf}
-    init -> make_string;
-    edge [color=red];
-    main -> printf [style=bold,label="100 times"];
-    make_string [label="make a string"];
-    node [shape=box,style=filled,color=".7 .3 1.0"];
-    execute -> compare;
-  }
-)
 
 # BOM
 
@@ -45,7 +36,7 @@ AlephPi workflow is described in the graph below:
 
 
 
-# 1. HW
+# Hardware
 
 ## GPIOs
 RaspberryPi has 40 GPIOs which can be used for different proposes. 
@@ -70,7 +61,7 @@ In order to protect RPi, each LED will be connected to RPi GPIO as described in 
 
 
 
-# 2. SW
+# Software
 
 
 1. Download Raspbian from [here](https://www.raspberrypi.org/downloads/raspbian/) and flash it on microSD card
