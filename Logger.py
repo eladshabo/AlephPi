@@ -1,33 +1,50 @@
-import sys
-import os
-import os.path
 import logging
-import Config
+from typing import Callable, Any
 
-class Logger:
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
-        fh = logging.FileHandler(Config.app_log_file)
-        fh.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        self.logger.addHandler(fh)
 
-    def log_function_entry(self, function_args):
-        self.logger.info(Config.log_function_entry_deco)
-        self.logger.info(self.get_caller_name() + " started with args: " + str(function_args))
+def log_function(func: Callable[..., Any]) -> Callable[..., Any]:
+    """A wrapper for logging every function entry, exit and exception.
 
-    def log_function_exit(self, instance_snapshot):
-        self.logger.info(Config.log_function_exit_deco)
-        self.logger.info(self.get_caller_name() + " exited")
-        self.logger.debug("instance_snapshot: " + os.linesep + instance_snapshot)
+    Args:
+        func (Callable): Function to be called, relevant arguments will be set during the actual function call.
+    """
 
-    def get_caller_name(self):
-        return sys._getframe(2).f_code.co_name
+    def wrapper(*args, **kwargs):
+        try:
+            logging.info(f"{func.__name__} started with parameters: {args} {kwargs}")
+            return func(*args, **kwargs)
+        except Exception as ex:
+            logging.exception(ex)
+            raise ex
+        finally:
+            logging.info(f"Function {func.__name__} exited")
 
-    def add_to_log(self, msg):
-        self.logger.info(msg)
+    return wrapper
 
-    def log_exception(self, excp_msg, instance_snapshot):
-        self.logger.error(excp_msg + " instance_snapshot: " + instance_snapshot, exc_info=True)
+
+def setup_logger(log_path: str) -> logging.Logger:
+    """Setting up logger for all AlephPi activity.
+
+    Args:
+        log_path (str): A path to the logging file
+
+    Raises:
+        Exception: In case of internal exception in logging module.
+
+    Returns:
+        logging.Logger: A valid logger,
+    """
+    try:
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)
+        handler = logging.handlers.RotatingFileHandler(
+            log_path, maxBytes=500000, backupCount=4
+        )
+        formatter = logging.Formatter(
+            "%(asctime)s - %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S"
+        )
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        return logger
+    except Exception as ex:
+        raise Exception(f"Cannot init logger - {ex}")

@@ -1,0 +1,5 @@
+pyserial
+pyaudio
+SpeechRecognition
+google-api-python-client
+monotonic

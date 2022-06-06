@@ -1,5 +1,8 @@
 # AlephPi
-AlephPi is a game for children in the preschool stage, allowing them to learn the alphabetical letters using **RaspberryPi** and **Google Cloud Services**
+AlephPi is a game for children in the preschool stage :child:, enabling alphabetical :abcd: recognition in a more fun-way while also having some good time with the kids. :rocket: :mortar_board:
+AlephPi is built running on **RaspberryPi** and using  **Google Cloud Services**
+
+Not sure you got it? skip to the ![demo section](https://github.com/eladshabo/AlephPi#Demo).
 
 
 # Content
